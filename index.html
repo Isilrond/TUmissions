@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tyrant Unleashed - Missions- & Belohnungskatalog</title>
+    <title>Tyrant Unleashed - Missions & Rewards Catalogue</title>
     <style>
         :root {
             --bg-color: #1a1c23;
@@ -169,38 +169,38 @@
 <div class="container">
     <header>
         <h1>Tyrant Unleashed</h1>
-        <p class="subtitle">Missions- und Belohnungskatalog — Optimiert für GitHub Pages</p>
+        <p class="subtitle">Missions & Rewards Catalogue</p>
     </header>
 
     <div class="search-container">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Mission, Belohnung oder Achievement suchen...">
+            <input type="text" id="searchInput" placeholder="Search mission, reward, or achievement...">
         </div>
         <select id="typeFilter">
-            <option value="">Alle Typen</option>
+            <option value="">All Row Types</option>
             <option value="Base (1st Clear)">Base (1st Clear)</option>
             <option value="Level Reward">Level Reward</option>
         </select>
     </div>
 
-    <div class="stats" id="statsDisplay">Lade Daten...</div>
+    <div class="stats" id="statsDisplay">Loading data...</div>
 
     <div class="table-responsive">
         <table id="rewardsTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Missionsname</th>
-                    <th onclick="sortTable(2)">Energie</th>
-                    <th onclick="sortTable(3)">Typ</th>
+                    <th onclick="sortTable(0)">Mission ID</th>
+                    <th onclick="sortTable(1)">Mission Name</th>
+                    <th onclick="sortTable(2)">Energy</th>
+                    <th onclick="sortTable(3)">Row Type</th>
                     <th onclick="sortTable(4)">Level</th>
-                    <th onclick="sortTable(5)">Belohnungstyp</th>
-                    <th onclick="sortTable(6)">Belohnung</th>
-                    <th onclick="sortTable(7)">Achievement / Details</th>
+                    <th onclick="sortTable(5)">Reward Type</th>
+                    <th onclick="sortTable(6)">Reward</th>
+                    <th onclick="sortTable(7)">Achievement Name (may not match mission)</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Dynamisch generiert -->
+                <!-- Dynamically generated -->
             </tbody>
         </table>
     </div>
@@ -6419,7 +6419,7 @@
             tableBody.appendChild(tr);
         });
         
-        statsDisplay.textContent = `Einträge gefunden: ${filteredData.length} von ${data.length}`;
+        statsDisplay.textContent = `Entries found: ${filteredData.length} of ${data.length}`;
     }
 
     function filterData() {
