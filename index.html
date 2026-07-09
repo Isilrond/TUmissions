@@ -1,0 +1,6491 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tyrant Unleashed - Missions- & Belohnungskatalog</title>
+    <style>
+        :root {
+            --bg-color: #1a1c23;
+            --card-bg: #242834;
+            --accent-color: #ff9f43;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #3b4256;
+            --table-hover: #2d3242;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(255, 159, 67, 0.5);
+        }
+
+        select {
+            padding: 12px 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .stats {
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e222b;
+            color: var(--accent-color);
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background-color: #252a36;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background-color: var(--table-hover);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-base {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.4);
+        }
+
+        .badge-reward {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.4);
+        }
+
+        .energy-tag {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Tyrant Unleashed</h1>
+        <p class="subtitle">Missions- und Belohnungskatalog — Optimiert für GitHub Pages</p>
+    </header>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Mission, Belohnung oder Achievement suchen...">
+        </div>
+        <select id="typeFilter">
+            <option value="">Alle Typen</option>
+            <option value="Base (1st Clear)">Base (1st Clear)</option>
+            <option value="Level Reward">Level Reward</option>
+        </select>
+    </div>
+
+    <div class="stats" id="statsDisplay">Lade Daten...</div>
+
+    <div class="table-responsive">
+        <table id="rewardsTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">ID</th>
+                    <th onclick="sortTable(1)">Missionsname</th>
+                    <th onclick="sortTable(2)">Energie</th>
+                    <th onclick="sortTable(3)">Typ</th>
+                    <th onclick="sortTable(4)">Level</th>
+                    <th onclick="sortTable(5)">Belohnungstyp</th>
+                    <th onclick="sortTable(6)">Belohnung</th>
+                    <th onclick="sortTable(7)">Achievement / Details</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Dynamisch generiert -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const data = [
+  {
+    "Mission ID": 5,
+    "Mission Name": "5. Bombardment",
+    "Energy": 18,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Peacekeeper",
+    "Achievement Name (may not match mission)": "Gold:14  Item:Azure Pantheon Idol"
+  },
+  {
+    "Mission ID": 5,
+    "Mission Name": "5. Bombardment",
+    "Energy": 18,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "Gold",
+    "Reward": "100",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 8,
+    "Mission Name": "8. New Direction",
+    "Energy": 20,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Bombardment Tank",
+    "Achievement Name (may not match mission)": "Gold:16  Item:Blue Kor Heart"
+  },
+  {
+    "Mission ID": 8,
+    "Mission Name": "8. New Direction",
+    "Energy": 20,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Crate",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 17,
+    "Mission Name": "17. Prometheus",
+    "Energy": 30,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Indebted Veteran",
+    "Achievement Name (may not match mission)": "Gold:300  Item:Red Pantheon Idol"
+  },
+  {
+    "Mission ID": 17,
+    "Mission Name": "17. Prometheus",
+    "Energy": 30,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Crate",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 28,
+    "Mission Name": "28. Queen",
+    "Energy": 35,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Brood Walker",
+    "Achievement Name (may not match mission)": "Gold:350  Item:Crimson Blight Stone"
+  },
+  {
+    "Mission ID": 28,
+    "Mission Name": "28. Queen",
+    "Energy": 35,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Crate",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 41,
+    "Mission Name": "41. World's Fate",
+    "Energy": 40,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Blitz Armor",
+    "Achievement Name (may not match mission)": "Gold:400  Item:Orange Kor Heart"
+  },
+  {
+    "Mission ID": 41,
+    "Mission Name": "41. World's Fate",
+    "Energy": 40,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Crate",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 68,
+    "Mission Name": "68. Unlocked",
+    "Energy": 70,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Scarab",
+    "Achievement Name (may not match mission)": "Gold:700  Item:Blue Cypher Scope"
+  },
+  {
+    "Mission ID": 68,
+    "Mission Name": "68. Unlocked",
+    "Energy": 70,
+    "Row Type": "Level Reward",
+    "Level": "—",
+    "Reward Type": "War Bonds",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 106,
+    "Mission Name": "106. World's End",
+    "Energy": 85,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Blitz",
+    "Achievement Name (may not match mission)": "Gold:850  Item:Purple Pantheon Idol"
+  },
+  {
+    "Mission ID": 106,
+    "Mission Name": "106. World's End",
+    "Energy": 85,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 106,
+    "Mission Name": "106. World's End",
+    "Energy": 85,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Alpha Dominion-2",
+    "Achievement Name (may not match mission)": "Take the Dominion"
+  },
+  {
+    "Mission ID": 118,
+    "Mission Name": "118. What Lies Beyond",
+    "Energy": 85,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Spectre",
+    "Achievement Name (may not match mission)": "Gold:850"
+  },
+  {
+    "Mission ID": 118,
+    "Mission Name": "118. What Lies Beyond",
+    "Energy": 85,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 130,
+    "Mission Name": "130. Silus' Acceptance",
+    "Energy": 90,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Hydra",
+    "Achievement Name (may not match mission)": "Gold:900"
+  },
+  {
+    "Mission ID": 130,
+    "Mission Name": "130. Silus' Acceptance",
+    "Energy": 90,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 130,
+    "Mission Name": "130. Silus' Acceptance",
+    "Energy": 90,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x100",
+    "Achievement Name (may not match mission)": "Expand your Dominion"
+  },
+  {
+    "Mission ID": 142,
+    "Mission Name": "142. Alpha Echo",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dominator",
+    "Achievement Name (may not match mission)": "Gold:1000"
+  },
+  {
+    "Mission ID": 142,
+    "Mission Name": "142. Alpha Echo",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Savior of Acheron"
+  },
+  {
+    "Mission ID": 142,
+    "Mission Name": "142. Alpha Echo",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Alpha Echo Master"
+  },
+  {
+    "Mission ID": 1013,
+    "Mission Name": "Gore Typhon Enraged",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Tartarus Scion",
+    "Achievement Name (may not match mission)": "Gold:350  Item:Blue Cypher Scope"
+  },
+  {
+    "Mission ID": 1013,
+    "Mission Name": "Gore Typhon Enraged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Malgoth x2",
+    "Achievement Name (may not match mission)": "Gore Typhon Enraged Orbified I"
+  },
+  {
+    "Mission ID": 1013,
+    "Mission Name": "Gore Typhon Enraged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Ghoulish Specter",
+    "Achievement Name (may not match mission)": "Gore Typhon Enraged Orbified II"
+  },
+  {
+    "Mission ID": 1013,
+    "Mission Name": "Gore Typhon Enraged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Narscious the Eerie",
+    "Achievement Name (may not match mission)": "Gore Typhon Enraged Orbified III"
+  },
+  {
+    "Mission ID": 1014,
+    "Mission Name": "Cyberius Recharged",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Assembly Plant",
+    "Achievement Name (may not match mission)": "Gold:350  Item:Purple Kor Heart"
+  },
+  {
+    "Mission ID": 1014,
+    "Mission Name": "Cyberius Recharged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Cyberpod",
+    "Achievement Name (may not match mission)": "Cyberius Recharged Lv. 10"
+  },
+  {
+    "Mission ID": 1015,
+    "Mission Name": "Excelsitus Emerged",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Xeno Singularis",
+    "Achievement Name (may not match mission)": "Gold:350  Item:Aqua Xeno Splice"
+  },
+  {
+    "Mission ID": 1015,
+    "Mission Name": "Excelsitus Emerged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Tazerok",
+    "Achievement Name (may not match mission)": "Excelsitus Emerged Lv. 10"
+  },
+  {
+    "Mission ID": 1015,
+    "Mission Name": "Excelsitus Emerged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Apex x2",
+    "Achievement Name (may not match mission)": "Excelsitus Emerged Orbified I"
+  },
+  {
+    "Mission ID": 1015,
+    "Mission Name": "Excelsitus Emerged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "SkyCom Perfect",
+    "Achievement Name (may not match mission)": "Excelsitus Emerged Orbified II"
+  },
+  {
+    "Mission ID": 1015,
+    "Mission Name": "Excelsitus Emerged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Warp Alchemist",
+    "Achievement Name (may not match mission)": "Excelsitus Emerged Orbified III"
+  },
+  {
+    "Mission ID": 1016,
+    "Mission Name": "Jotun Revitalized",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Knight",
+    "Achievement Name (may not match mission)": "Gold:350  Item:Purple Pantheon Idol"
+  },
+  {
+    "Mission ID": 1016,
+    "Mission Name": "Jotun Revitalized",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Jotun Revitalized Lv. 10"
+  },
+  {
+    "Mission ID": 1017,
+    "Mission Name": "Halcyon Enraged",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dominator",
+    "Achievement Name (may not match mission)": "Gold:350  Item:White Baron Medal"
+  },
+  {
+    "Mission ID": 1017,
+    "Mission Name": "Halcyon Enraged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Halcyon Enraged Lv. 10"
+  },
+  {
+    "Mission ID": 1018,
+    "Mission Name": "GDR Rebooted",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Imperial APC",
+    "Achievement Name (may not match mission)": "Gold:350  Item:White Baron Medal"
+  },
+  {
+    "Mission ID": 1018,
+    "Mission Name": "GDR Rebooted",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Fighter Jet",
+    "Achievement Name (may not match mission)": "GDR Rebooted Lv. 10"
+  },
+  {
+    "Mission ID": 1019,
+    "Mission Name": "Balefire Bolstered",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Terminator",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1019,
+    "Mission Name": "Balefire Bolstered",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Elite Soldier",
+    "Achievement Name (may not match mission)": "Balefire Bolstered Lv. 10"
+  },
+  {
+    "Mission ID": 1020,
+    "Mission Name": "Vitriol Vile",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Blitz Armor",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1020,
+    "Mission Name": "Vitriol Vile",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Trench",
+    "Achievement Name (may not match mission)": "Vitriol Vile Lv. 10"
+  },
+  {
+    "Mission ID": 1021,
+    "Mission Name": "Mammon Mania",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Brood Walker",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1021,
+    "Mission Name": "Mammon Mania",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Nightcrawler",
+    "Achievement Name (may not match mission)": "Mammon Mania Lv. 10"
+  },
+  {
+    "Mission ID": 1022,
+    "Mission Name": "Fissure Ferocious",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Enclave Remnant",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1022,
+    "Mission Name": "Fissure Ferocious",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Arch Nova",
+    "Achievement Name (may not match mission)": "Fissure Ferocious Lv. 10"
+  },
+  {
+    "Mission ID": 1023,
+    "Mission Name": "Pantheon Powered",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Indebted Veteran",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1023,
+    "Mission Name": "Pantheon Powered",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Gallant Knight",
+    "Achievement Name (may not match mission)": "Pantheon Powered Lv. 10"
+  },
+  {
+    "Mission ID": 1027,
+    "Mission Name": "Barracus Lost 4",
+    "Energy": 150,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Barracus Demoted",
+    "Achievement Name (may not match mission)": "Gold:510"
+  },
+  {
+    "Mission ID": 1027,
+    "Mission Name": "Barracus Lost 4",
+    "Energy": 150,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Barracus Demoted",
+    "Achievement Name (may not match mission)": "Barracus Lost 4 Lv. 10"
+  },
+  {
+    "Mission ID": 1028,
+    "Mission Name": "Arachis Arrival",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Spectre",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1028,
+    "Mission Name": "Arachis Arrival",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Arachis Arrival Lv. 10"
+  },
+  {
+    "Mission ID": 1029,
+    "Mission Name": "Mighty Mephistopheles",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Lummox",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1029,
+    "Mission Name": "Mighty Mephistopheles",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Mighty Mephistopheles Lv. 10"
+  },
+  {
+    "Mission ID": 1033,
+    "Mission Name": "Barracus Found 4",
+    "Energy": 150,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Emrys Freed",
+    "Achievement Name (may not match mission)": "Gold:510"
+  },
+  {
+    "Mission ID": 1033,
+    "Mission Name": "Barracus Found 4",
+    "Energy": 150,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Emrys Freed",
+    "Achievement Name (may not match mission)": "Barracus Found 4 Lv. 10"
+  },
+  {
+    "Mission ID": 1034,
+    "Mission Name": "Fierce Fury",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Pathrazer",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1034,
+    "Mission Name": "Fierce Fury",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Astral Strafer",
+    "Achievement Name (may not match mission)": "Fierce Fury Lv. 10"
+  },
+  {
+    "Mission ID": 1034,
+    "Mission Name": "Fierce Fury",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "Atonement"
+  },
+  {
+    "Mission ID": 1035,
+    "Mission Name": "Brimstone Beckons",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Gladius",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1035,
+    "Mission Name": "Brimstone Beckons",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Gladius",
+    "Achievement Name (may not match mission)": "Brimstone Beckons Lv. 10"
+  },
+  {
+    "Mission ID": 1036,
+    "Mission Name": "Paramount Patriarch",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Divinity",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1036,
+    "Mission Name": "Paramount Patriarch",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Divinity",
+    "Achievement Name (may not match mission)": "Paramount Patriarch Lv. 10"
+  },
+  {
+    "Mission ID": 1036,
+    "Mission Name": "Paramount Patriarch",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "The Return"
+  },
+  {
+    "Mission ID": 1037,
+    "Mission Name": "The Gateway Anomaly",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Omenosis",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1037,
+    "Mission Name": "The Gateway Anomaly",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Omenosis",
+    "Achievement Name (may not match mission)": "The Gateway Anomaly Lv. 10"
+  },
+  {
+    "Mission ID": 1038,
+    "Mission Name": "Kalihmah Awakens",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Gethar",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1038,
+    "Mission Name": "Kalihmah Awakens",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Gethar",
+    "Achievement Name (may not match mission)": "Kalihmah Awakens Lv. 10"
+  },
+  {
+    "Mission ID": 1038,
+    "Mission Name": "Kalihmah Awakens",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "Revelation"
+  },
+  {
+    "Mission ID": 1039,
+    "Mission Name": "Forgotten Forsaken",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1039,
+    "Mission Name": "Forgotten Forsaken",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Forgotten Forsaken Lv. 10"
+  },
+  {
+    "Mission ID": 1039,
+    "Mission Name": "Forgotten Forsaken",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "Challenges"
+  },
+  {
+    "Mission ID": 1040,
+    "Mission Name": "Shot the Sheriff",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1040,
+    "Mission Name": "Shot the Sheriff",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Stockpile",
+    "Achievement Name (may not match mission)": "Shot the Sheriff Lv. 10"
+  },
+  {
+    "Mission ID": 1040,
+    "Mission Name": "Shot the Sheriff",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "50",
+    "Achievement Name (may not match mission)": "Supernatural Aid"
+  },
+  {
+    "Mission ID": 1041,
+    "Mission Name": "Malaphir's Malevolence",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Howler",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1041,
+    "Mission Name": "Malaphir's Malevolence",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Howler",
+    "Achievement Name (may not match mission)": "Malaphir's Malevolence Lv. 10"
+  },
+  {
+    "Mission ID": 1042,
+    "Mission Name": "Emrys' Eminence",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Briareos",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1042,
+    "Mission Name": "Emrys' Eminence",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Briareos",
+    "Achievement Name (may not match mission)": "Emrys' Eminence Lv. 10"
+  },
+  {
+    "Mission ID": 1043,
+    "Mission Name": "Ultimate Uruk",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Vincentius",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1043,
+    "Mission Name": "Ultimate Uruk",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Vincentius",
+    "Achievement Name (may not match mission)": "Ultimate Uruk Lv. 10"
+  },
+  {
+    "Mission ID": 1044,
+    "Mission Name": "Nexus Arachis Returns",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Zashik",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1044,
+    "Mission Name": "Nexus Arachis Returns",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Zashik",
+    "Achievement Name (may not match mission)": "Nexus Arachis Returns Lv. 10"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dion",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dion",
+    "Achievement Name (may not match mission)": "The Continuum Shift Lv. 10"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Nimbus",
+    "Achievement Name (may not match mission)": "The Continuum Endgame I"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "23",
+    "Reward Type": "Card",
+    "Reward": "Omega",
+    "Achievement Name (may not match mission)": "The Continuum Endgame II"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "26",
+    "Reward Type": "Card",
+    "Reward": "Malgoth",
+    "Achievement Name (may not match mission)": "The Continuum Endgame III"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Apex",
+    "Achievement Name (may not match mission)": "The Continuum Endgame IV"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "32",
+    "Reward Type": "Card",
+    "Reward": "Benediction",
+    "Achievement Name (may not match mission)": "The Continuum Endgame V"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard x500",
+    "Achievement Name (may not match mission)": "The Continuum Endgame VI"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Nimbus x2",
+    "Achievement Name (may not match mission)": "The Continuum Endgame VII"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "43",
+    "Reward Type": "Card",
+    "Reward": "Omega x2",
+    "Achievement Name (may not match mission)": "The Continuum Endgame VIII"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "46",
+    "Reward Type": "Card",
+    "Reward": "Malgoth x2",
+    "Achievement Name (may not match mission)": "The Continuum Endgame IX"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Apex x2",
+    "Achievement Name (may not match mission)": "The Continuum Endgame X"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "52",
+    "Reward Type": "Card",
+    "Reward": "Benediction x2",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XI"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository x50",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XII"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Nimbus x5",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XIII"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "63",
+    "Reward Type": "Card",
+    "Reward": "Omega x5",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XIV"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "66",
+    "Reward Type": "Card",
+    "Reward": "Malgoth x5",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XV"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "69",
+    "Reward Type": "Card",
+    "Reward": "Apex x5",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XVI"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "72",
+    "Reward Type": "Card",
+    "Reward": "Benediction x5",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XVII"
+  },
+  {
+    "Mission ID": 1045,
+    "Mission Name": "The Continuum Shift",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor x10",
+    "Achievement Name (may not match mission)": "The Continuum Endgame XVIII"
+  },
+  {
+    "Mission ID": 1046,
+    "Mission Name": "Annihilatron Activated",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Mobilized Casket",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1046,
+    "Mission Name": "Annihilatron Activated",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Mobilized Casket",
+    "Achievement Name (may not match mission)": "Annihilatron Activated Lv. 10"
+  },
+  {
+    "Mission ID": 1047,
+    "Mission Name": "Power of Phobos",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Flesh Assimilator",
+    "Achievement Name (may not match mission)": "Gold:350"
+  },
+  {
+    "Mission ID": 1047,
+    "Mission Name": "Power of Phobos",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Flesh Assimilator",
+    "Achievement Name (may not match mission)": "Power of Phobos Lv. 10"
+  },
+  {
+    "Mission ID": 1048,
+    "Mission Name": "Dracorex's Deception",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1048,
+    "Mission Name": "Dracorex's Deception",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Dracorex's Deception Lv. 10"
+  },
+  {
+    "Mission ID": 1049,
+    "Mission Name": "Arkadios' Altar",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1049,
+    "Mission Name": "Arkadios' Altar",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Arkadios' Altar Lv. 10"
+  },
+  {
+    "Mission ID": 1050,
+    "Mission Name": "Krellus Charged",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1050,
+    "Mission Name": "Krellus Charged",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Krellus Charged Lv. 10"
+  },
+  {
+    "Mission ID": 1051,
+    "Mission Name": "Dauntless Deimos",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1051,
+    "Mission Name": "Dauntless Deimos",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Dauntless Deimos Lv. 10"
+  },
+  {
+    "Mission ID": 1052,
+    "Mission Name": "Excellent Excalibur",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1052,
+    "Mission Name": "Excellent Excalibur",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Excellent Excalibur Lv. 10"
+  },
+  {
+    "Mission ID": 1053,
+    "Mission Name": "Malort's Malevolence",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1053,
+    "Mission Name": "Malort's Malevolence",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Malort's Malevolence Lv. 10"
+  },
+  {
+    "Mission ID": 1054,
+    "Mission Name": "Alpha Anicetus",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1054,
+    "Mission Name": "Alpha Anicetus",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Alpha Anicetus Lv. 10"
+  },
+  {
+    "Mission ID": 1055,
+    "Mission Name": "Primal Precursor",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1055,
+    "Mission Name": "Primal Precursor",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Primal Precursor Lv. 10"
+  },
+  {
+    "Mission ID": 1056,
+    "Mission Name": "Gialdrea's Ambush",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1056,
+    "Mission Name": "Gialdrea's Ambush",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Gialdrea's Ambush Lv. 10"
+  },
+  {
+    "Mission ID": 1057,
+    "Mission Name": "Deadly Darius",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1057,
+    "Mission Name": "Deadly Darius",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Deadly Darius Lv. 10"
+  },
+  {
+    "Mission ID": 1058,
+    "Mission Name": "Killer Kleave",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1058,
+    "Mission Name": "Killer Kleave",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Killer Kleave Lv. 10"
+  },
+  {
+    "Mission ID": 1059,
+    "Mission Name": "Armada Madness",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1059,
+    "Mission Name": "Armada Madness",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Armada Madness Lv. 10"
+  },
+  {
+    "Mission ID": 1060,
+    "Mission Name": "Razogoth Undead",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1060,
+    "Mission Name": "Razogoth Undead",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Razogoth Undead Lv. 10"
+  },
+  {
+    "Mission ID": 1061,
+    "Mission Name": "Charybdis in the Abyss",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1061,
+    "Mission Name": "Charybdis in the Abyss",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Charybdis in the Abyss Lv. 10"
+  },
+  {
+    "Mission ID": 1062,
+    "Mission Name": "Dubious Darius",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1062,
+    "Mission Name": "Dubious Darius",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Dubious Darius Lv. 10"
+  },
+  {
+    "Mission ID": 1063,
+    "Mission Name": "Gialdrea's Garrison",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1063,
+    "Mission Name": "Gialdrea's Garrison",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Gialdrea's Garrison Lv. 10"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 10"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Stolen Battlesuit",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 25"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Stolen Battlesuit",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 30"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 35"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Underworld Battlesuit",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 45"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 50"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Last Testament",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 55"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Last Testament",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 60"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 65"
+  },
+  {
+    "Mission ID": 1064,
+    "Mission Name": "Olivia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Last Will",
+    "Achievement Name (may not match mission)": "Olivia's Operation Lv. 75"
+  },
+  {
+    "Mission ID": 1065,
+    "Mission Name": "Gyrogorgon's Maw",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1065,
+    "Mission Name": "Gyrogorgon's Maw",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Gyrogorgon's Maw Lv. 10"
+  },
+  {
+    "Mission ID": 1066,
+    "Mission Name": "Broodmother's Nest",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1066,
+    "Mission Name": "Broodmother's Nest",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Broodmother's Nest Lv. 10"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 10"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Nameless Soldier",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 25"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Nameless Soldier",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 30"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 35"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Nameless Hero",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 45"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 50"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Silvus' Guard",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 55"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Silvus' Guard",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 60"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 65"
+  },
+  {
+    "Mission ID": 1067,
+    "Mission Name": "Gaia's Operation",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Silvus' Sentry",
+    "Achievement Name (may not match mission)": "Gaia's Operation Lv. 75"
+  },
+  {
+    "Mission ID": 1068,
+    "Mission Name": "Nidhogg Knockdown",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1068,
+    "Mission Name": "Nidhogg Knockdown",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Nidhogg Knockdown Lv. 10"
+  },
+  {
+    "Mission ID": 1069,
+    "Mission Name": "Return of Supremacy",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1069,
+    "Mission Name": "Return of Supremacy",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Return of Supremacy Lv. 10"
+  },
+  {
+    "Mission ID": 1070,
+    "Mission Name": "Nexor's Next Move",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1070,
+    "Mission Name": "Nexor's Next Move",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Nexor's Next Move Lv. 10"
+  },
+  {
+    "Mission ID": 1071,
+    "Mission Name": "Helios Homebound",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1071,
+    "Mission Name": "Helios Homebound",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Helios Homebound Lv. 10"
+  },
+  {
+    "Mission ID": 1072,
+    "Mission Name": "Kaszatah's Collection",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1072,
+    "Mission Name": "Kaszatah's Collection",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Kaszatah's Collection Lv. 10"
+  },
+  {
+    "Mission ID": 1073,
+    "Mission Name": "Ruins of Rhuthok",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1073,
+    "Mission Name": "Ruins of Rhuthok",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Ruins of Rhuthok Lv. 10"
+  },
+  {
+    "Mission ID": 1074,
+    "Mission Name": "Empress' Empire",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1074,
+    "Mission Name": "Empress' Empire",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Empress' Empire Lv. 10"
+  },
+  {
+    "Mission ID": 1075,
+    "Mission Name": "Kleave's Signal",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1075,
+    "Mission Name": "Kleave's Signal",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Kleave's Signal Lv. 10"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 10"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Ashrock Reprisal",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 25"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Ashrock Reprisal",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 30"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 35"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Eden Reprisal",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 45"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 50"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Tesserarius",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 55"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Tesserarius",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 60"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 65"
+  },
+  {
+    "Mission ID": 1076,
+    "Mission Name": "The Legend of Halcyon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Fortress Tesserarius",
+    "Achievement Name (may not match mission)": "The Legend of Halcyon Lv. 75"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 10"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Unholy Drexkael",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 25"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Unholy Drexkael",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 30"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 35"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Devilish Drexkael",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 45"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 50"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Miasma Threat",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 55"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Miasma Threat",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 60"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 65"
+  },
+  {
+    "Mission ID": 1077,
+    "Mission Name": "Rhuthok Rampage",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Miasma Terror",
+    "Achievement Name (may not match mission)": "Rhuthok Rampage Lv. 75"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 10"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Zetaray",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 25"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Zetaray",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 30"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 35"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Zetaray Phantom",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 45"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 50"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Optinax",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 55"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Optinax",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 60"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 65"
+  },
+  {
+    "Mission ID": 1078,
+    "Mission Name": "Kaszatah's Challenge",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Optinax Magmacore",
+    "Achievement Name (may not match mission)": "Kaszatah's Challenge Lv. 75"
+  },
+  {
+    "Mission ID": 1079,
+    "Mission Name": "Alaric's Admonishment",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1079,
+    "Mission Name": "Alaric's Admonishment",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Alaric's Admonishment Lv. 10"
+  },
+  {
+    "Mission ID": 1080,
+    "Mission Name": "Heartless Hell",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1080,
+    "Mission Name": "Heartless Hell",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Heartless Hell Lv. 10"
+  },
+  {
+    "Mission ID": 1081,
+    "Mission Name": "Melek's Machinations",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1081,
+    "Mission Name": "Melek's Machinations",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Melek's Machinations Lv. 10"
+  },
+  {
+    "Mission ID": 1082,
+    "Mission Name": "Nefarious Naglfar",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1082,
+    "Mission Name": "Nefarious Naglfar",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Nefarious Naglfar Lv. 10"
+  },
+  {
+    "Mission ID": 1083,
+    "Mission Name": "Alucard Adamant",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1083,
+    "Mission Name": "Alucard Adamant",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Alucard Adamant Lv. 10"
+  },
+  {
+    "Mission ID": 1084,
+    "Mission Name": "Pyrapherus' Punishment",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1084,
+    "Mission Name": "Pyrapherus' Punishment",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Pyrapherus' Punishment Lv. 10"
+  },
+  {
+    "Mission ID": 1085,
+    "Mission Name": "Kokabiel Recreated",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:350  SP:40"
+  },
+  {
+    "Mission ID": 1085,
+    "Mission Name": "Kokabiel Recreated",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x25",
+    "Achievement Name (may not match mission)": "Kokabiel Recreated Lv. 10"
+  },
+  {
+    "Mission ID": 1275,
+    "Mission Name": "Borra Factory 1",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1275,
+    "Mission Name": "Borra Factory 1",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Borra",
+    "Achievement Name (may not match mission)": "Borra Recon I"
+  },
+  {
+    "Mission ID": 1275,
+    "Mission Name": "Borra Factory 1",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Borra",
+    "Achievement Name (may not match mission)": "Borra Recon II"
+  },
+  {
+    "Mission ID": 1275,
+    "Mission Name": "Borra Factory 1",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Omega",
+    "Achievement Name (may not match mission)": "Borra Recon III"
+  },
+  {
+    "Mission ID": 1275,
+    "Mission Name": "Borra Factory 1",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Borra Recon IV"
+  },
+  {
+    "Mission ID": 1276,
+    "Mission Name": "Borra Factory 2",
+    "Energy": 75,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:750"
+  },
+  {
+    "Mission ID": 1276,
+    "Mission Name": "Borra Factory 2",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Omega",
+    "Achievement Name (may not match mission)": "Borra Encounter I"
+  },
+  {
+    "Mission ID": 1276,
+    "Mission Name": "Borra Factory 2",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Hektor",
+    "Achievement Name (may not match mission)": "Borra Encounter II"
+  },
+  {
+    "Mission ID": 1276,
+    "Mission Name": "Borra Factory 2",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Hektor",
+    "Achievement Name (may not match mission)": "Borra Encounter III"
+  },
+  {
+    "Mission ID": 1276,
+    "Mission Name": "Borra Factory 2",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Roadblock Trainee",
+    "Achievement Name (may not match mission)": "Borra Encounter IV"
+  },
+  {
+    "Mission ID": 1277,
+    "Mission Name": "Borra Factory 3",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:1000"
+  },
+  {
+    "Mission ID": 1277,
+    "Mission Name": "Borra Factory 3",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Bad Borra",
+    "Achievement Name (may not match mission)": "Borra Intrusion I"
+  },
+  {
+    "Mission ID": 1277,
+    "Mission Name": "Borra Factory 3",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Hektor the Duelist",
+    "Achievement Name (may not match mission)": "Borra Intrusion II"
+  },
+  {
+    "Mission ID": 1277,
+    "Mission Name": "Borra Factory 3",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Roadblock Trainee",
+    "Achievement Name (may not match mission)": "Borra Intrusion III"
+  },
+  {
+    "Mission ID": 1277,
+    "Mission Name": "Borra Factory 3",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Roadblock Pilot",
+    "Achievement Name (may not match mission)": "Borra Intrusion IV"
+  },
+  {
+    "Mission ID": 1278,
+    "Mission Name": "Infested Relay - Signal",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1278,
+    "Mission Name": "Infested Relay - Signal",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Kythog Chewer",
+    "Achievement Name (may not match mission)": "Signal I"
+  },
+  {
+    "Mission ID": 1278,
+    "Mission Name": "Infested Relay - Signal",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Kythog Chewer",
+    "Achievement Name (may not match mission)": "Signal II"
+  },
+  {
+    "Mission ID": 1278,
+    "Mission Name": "Infested Relay - Signal",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Malgoth",
+    "Achievement Name (may not match mission)": "Signal III"
+  },
+  {
+    "Mission ID": 1278,
+    "Mission Name": "Infested Relay - Signal",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Signal IV"
+  },
+  {
+    "Mission ID": 1279,
+    "Mission Name": "Infested Relay - Swarm",
+    "Energy": 75,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:750"
+  },
+  {
+    "Mission ID": 1279,
+    "Mission Name": "Infested Relay - Swarm",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Malgoth",
+    "Achievement Name (may not match mission)": "Swarm I"
+  },
+  {
+    "Mission ID": 1279,
+    "Mission Name": "Infested Relay - Swarm",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Blood Cur",
+    "Achievement Name (may not match mission)": "Swarm II"
+  },
+  {
+    "Mission ID": 1279,
+    "Mission Name": "Infested Relay - Swarm",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Blood Cur",
+    "Achievement Name (may not match mission)": "Swarm III"
+  },
+  {
+    "Mission ID": 1279,
+    "Mission Name": "Infested Relay - Swarm",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Dream Despot",
+    "Achievement Name (may not match mission)": "Swarm IV"
+  },
+  {
+    "Mission ID": 1280,
+    "Mission Name": "Infested Relay - Delirium",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:1000"
+  },
+  {
+    "Mission ID": 1280,
+    "Mission Name": "Infested Relay - Delirium",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Blight Cur",
+    "Achievement Name (may not match mission)": "Delirium I"
+  },
+  {
+    "Mission ID": 1280,
+    "Mission Name": "Infested Relay - Delirium",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository",
+    "Achievement Name (may not match mission)": "Delirium II"
+  },
+  {
+    "Mission ID": 1280,
+    "Mission Name": "Infested Relay - Delirium",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Dream Despot",
+    "Achievement Name (may not match mission)": "Delirium III"
+  },
+  {
+    "Mission ID": 1280,
+    "Mission Name": "Infested Relay - Delirium",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Dream Despoiler",
+    "Achievement Name (may not match mission)": "Delirium IV"
+  },
+  {
+    "Mission ID": 1281,
+    "Mission Name": "Minerva's Purge - Legion",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1281,
+    "Mission Name": "Minerva's Purge - Legion",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Benediction",
+    "Achievement Name (may not match mission)": "Apostles I"
+  },
+  {
+    "Mission ID": 1281,
+    "Mission Name": "Minerva's Purge - Legion",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository",
+    "Achievement Name (may not match mission)": "Apostles II"
+  },
+  {
+    "Mission ID": 1281,
+    "Mission Name": "Minerva's Purge - Legion",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Grail Defender",
+    "Achievement Name (may not match mission)": "Apostles III"
+  },
+  {
+    "Mission ID": 1281,
+    "Mission Name": "Minerva's Purge - Legion",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Grail Defender",
+    "Achievement Name (may not match mission)": "Apostles IV"
+  },
+  {
+    "Mission ID": 1282,
+    "Mission Name": "Minerva's Purge - Shrine",
+    "Energy": 75,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:750"
+  },
+  {
+    "Mission ID": 1282,
+    "Mission Name": "Minerva's Purge - Shrine",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Benediction",
+    "Achievement Name (may not match mission)": "Monastery I"
+  },
+  {
+    "Mission ID": 1282,
+    "Mission Name": "Minerva's Purge - Shrine",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Monastery II"
+  },
+  {
+    "Mission ID": 1282,
+    "Mission Name": "Minerva's Purge - Shrine",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Minerva's Law",
+    "Achievement Name (may not match mission)": "Monastery III"
+  },
+  {
+    "Mission ID": 1282,
+    "Mission Name": "Minerva's Purge - Shrine",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Minerva's Law",
+    "Achievement Name (may not match mission)": "Monastery IV"
+  },
+  {
+    "Mission ID": 1283,
+    "Mission Name": "Minerva's Purge - Champion",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:1000"
+  },
+  {
+    "Mission ID": 1283,
+    "Mission Name": "Minerva's Purge - Champion",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Exodus I"
+  },
+  {
+    "Mission ID": 1283,
+    "Mission Name": "Minerva's Purge - Champion",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Foresight Dome",
+    "Achievement Name (may not match mission)": "Exodus II"
+  },
+  {
+    "Mission ID": 1283,
+    "Mission Name": "Minerva's Purge - Champion",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Foresight Dome",
+    "Achievement Name (may not match mission)": "Exodus III"
+  },
+  {
+    "Mission ID": 1283,
+    "Mission Name": "Minerva's Purge - Champion",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Owl's Foresight",
+    "Achievement Name (may not match mission)": "Exodus IV"
+  },
+  {
+    "Mission ID": 1500,
+    "Mission Name": "Razogoth Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Blue Cypher Scope"
+  },
+  {
+    "Mission ID": 1500,
+    "Mission Name": "Razogoth Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Razogoth Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1501,
+    "Mission Name": "Tyr Cannon Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Purple Kor Heart"
+  },
+  {
+    "Mission ID": 1501,
+    "Mission Name": "Tyr Cannon Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Tyr Cannon Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1502,
+    "Mission Name": "Excelsitus Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Ascendant",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Aqua Xeno Splice"
+  },
+  {
+    "Mission ID": 1502,
+    "Mission Name": "Excelsitus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Kylen",
+    "Achievement Name (may not match mission)": "Excelsitus Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1502,
+    "Mission Name": "Excelsitus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Ascendant",
+    "Achievement Name (may not match mission)": "Excelsitus Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Ascendant",
+    "Achievement Name (may not match mission)": "Gold:175  Item:White Baron Medal"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard x100",
+    "Achievement Name (may not match mission)": "Albatross Endgame I"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Invulnerable Arbor",
+    "Achievement Name (may not match mission)": "Albatross Endgame II"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository x20",
+    "Achievement Name (may not match mission)": "Albatross Endgame III"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Savant Ascendant",
+    "Achievement Name (may not match mission)": "Albatross Endgame IV"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Nimbus x5",
+    "Achievement Name (may not match mission)": "Albatross Endgame V"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Cain's Ion Lancer",
+    "Achievement Name (may not match mission)": "Albatross Endgame VI"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor x3",
+    "Achievement Name (may not match mission)": "Albatross Endgame VII"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Nikolas' Omnishot",
+    "Achievement Name (may not match mission)": "Albatross Endgame VIII"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core x15",
+    "Achievement Name (may not match mission)": "Albatross Endgame IX"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Render Unbreakable",
+    "Achievement Name (may not match mission)": "Albatross Endgame X"
+  },
+  {
+    "Mission ID": 1503,
+    "Mission Name": "Albatross Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Albatross Endgame XI"
+  },
+  {
+    "Mission ID": 1504,
+    "Mission Name": "Serapherus Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Ezamit",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Purple Pantheon Idol"
+  },
+  {
+    "Mission ID": 1504,
+    "Mission Name": "Serapherus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Arkadios",
+    "Achievement Name (may not match mission)": "Serapherus Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1504,
+    "Mission Name": "Serapherus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Ezamit",
+    "Achievement Name (may not match mission)": "Serapherus Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1505,
+    "Mission Name": "Miasma Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Blue Cypher Scope"
+  },
+  {
+    "Mission ID": 1505,
+    "Mission Name": "Miasma Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Malort",
+    "Achievement Name (may not match mission)": "Miasma Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1505,
+    "Mission Name": "Miasma Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dreamweaver",
+    "Achievement Name (may not match mission)": "Miasma Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Ezamit",
+    "Achievement Name (may not match mission)": "Gold:175  Item:Purple Kor Heart"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Daedalus",
+    "Achievement Name (may not match mission)": "Albatross Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Lord Silus",
+    "Achievement Name (may not match mission)": "Protomech Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Ascendant",
+    "Achievement Name (may not match mission)": "Albatross Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Ezamit",
+    "Achievement Name (may not match mission)": "Protomech Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard x100",
+    "Achievement Name (may not match mission)": "Protomech Endgame I"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Barracus' Exenterator",
+    "Achievement Name (may not match mission)": "Protomech Endgame II"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository x20",
+    "Achievement Name (may not match mission)": "Protomech Endgame III"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Ezamit Tranq",
+    "Achievement Name (may not match mission)": "Protomech Endgame IV"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Omega x5",
+    "Achievement Name (may not match mission)": "Protomech Endgame V"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Headhunter Owen",
+    "Achievement Name (may not match mission)": "Protomech Endgame VI"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor x3",
+    "Achievement Name (may not match mission)": "Protomech Endgame VII"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Rebel Ranger",
+    "Achievement Name (may not match mission)": "Protomech Endgame VIII"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core x15",
+    "Achievement Name (may not match mission)": "Protomech Endgame IX"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Optio Rebellious",
+    "Achievement Name (may not match mission)": "Protomech Endgame X"
+  },
+  {
+    "Mission ID": 1506,
+    "Mission Name": "Protomech Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Protomech Endgame XI"
+  },
+  {
+    "Mission ID": 1507,
+    "Mission Name": "Iron Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Arsha the Bound",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1507,
+    "Mission Name": "Iron Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Mutated Neocyte Core",
+    "Achievement Name (may not match mission)": "Iron Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1507,
+    "Mission Name": "Iron Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x100",
+    "Achievement Name (may not match mission)": "Edge of Dominion"
+  },
+  {
+    "Mission ID": 1507,
+    "Mission Name": "Iron Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Therion Aethersworn",
+    "Achievement Name (may not match mission)": "Iron Master"
+  },
+  {
+    "Mission ID": 1508,
+    "Mission Name": "Steel Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Arsha the Bound",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1508,
+    "Mission Name": "Steel Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2  (trade-in: Mutated Neocyte Core)",
+    "Achievement Name (may not match mission)": "Steel Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1508,
+    "Mission Name": "Steel Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Therion Aethersworn",
+    "Achievement Name (may not match mission)": "Steel Master"
+  },
+  {
+    "Mission ID": 1509,
+    "Mission Name": "Supremacy Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Arsha the Bound",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1509,
+    "Mission Name": "Supremacy Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Arsha the Bound",
+    "Achievement Name (may not match mission)": "Supremacy Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1509,
+    "Mission Name": "Supremacy Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Therion Aethersworn",
+    "Achievement Name (may not match mission)": "Supremacy Master"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Pandemonium Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "SP",
+    "Reward": "100",
+    "Achievement Name (may not match mission)": "Pandemonium Master"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard x100",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame I"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Bizarre Whirler",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame II"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository x20",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame III"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Harrigan Insane",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame IV"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Omega x10",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame V"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Chaos Rig",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame VI"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor x5",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame VII"
+  },
+  {
+    "Mission ID": 1510,
+    "Mission Name": "Pandemonium Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Ziz of the Pits",
+    "Achievement Name (may not match mission)": "Pandemonium Endgame VIII"
+  },
+  {
+    "Mission ID": 1511,
+    "Mission Name": "Warden Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1511,
+    "Mission Name": "Warden Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar-2",
+    "Achievement Name (may not match mission)": "Warden Mutant Lv. 1"
+  },
+  {
+    "Mission ID": 1511,
+    "Mission Name": "Warden Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Cassius",
+    "Achievement Name (may not match mission)": "Warden Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1511,
+    "Mission Name": "Warden Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Warden Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1512,
+    "Mission Name": "Forsaken Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1512,
+    "Mission Name": "Forsaken Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar-2",
+    "Achievement Name (may not match mission)": "Forsaken Mutant Lv. 1"
+  },
+  {
+    "Mission ID": 1512,
+    "Mission Name": "Forsaken Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Darius",
+    "Achievement Name (may not match mission)": "Forsaken Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1512,
+    "Mission Name": "Forsaken Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Forsaken Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1513,
+    "Mission Name": "Golmaw Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1513,
+    "Mission Name": "Golmaw Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar-2",
+    "Achievement Name (may not match mission)": "Golmaw Mutant Lv. 1"
+  },
+  {
+    "Mission ID": 1513,
+    "Mission Name": "Golmaw Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Razogoth",
+    "Achievement Name (may not match mission)": "Golmaw Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1513,
+    "Mission Name": "Golmaw Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Golmaw Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1514,
+    "Mission Name": "Hydra Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1514,
+    "Mission Name": "Hydra Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar-2",
+    "Achievement Name (may not match mission)": "Hydra Mutant Lv. 1"
+  },
+  {
+    "Mission ID": 1514,
+    "Mission Name": "Hydra Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Kleave",
+    "Achievement Name (may not match mission)": "Hydra Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1514,
+    "Mission Name": "Hydra Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Hydra Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1515,
+    "Mission Name": "Jotun Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1515,
+    "Mission Name": "Jotun Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar-2",
+    "Achievement Name (may not match mission)": "Jotun Mutant Lv. 1"
+  },
+  {
+    "Mission ID": 1515,
+    "Mission Name": "Jotun Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Gaia",
+    "Achievement Name (may not match mission)": "Jotun Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1515,
+    "Mission Name": "Jotun Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Jotun Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core-2",
+    "Achievement Name (may not match mission)": "Gold:175"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "2",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor-2",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 2"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "3",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor-2",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 3"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "4",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 4"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Prixis Awakened",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "6",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor-2",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 6"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "7",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor-2",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 7"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "8",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 8"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "9",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 9"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Prixis Awakened",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Prixis Awakened",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Adept"
+  },
+  {
+    "Mission ID": 1516,
+    "Mission Name": "Mesmerize Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Prixis Awakened",
+    "Achievement Name (may not match mission)": "Mesmerize Mutant Master"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Emergency Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Emergency Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Emergency Medilifter",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "HyperSec Stalker",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "HyperSec Stalker",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "HyperSec Chaser",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Product of Eden",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Product of Eden",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Product of Eden",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Product of Eden",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Cain",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "95",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Fusion Core",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 95"
+  },
+  {
+    "Mission ID": 1517,
+    "Mission Name": "Cain Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Cain Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 5"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "8",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 8"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "9",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 9"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "CC4 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "13",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 13"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "14",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 14"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "15",
+    "Reward Type": "Card",
+    "Reward": "CC4 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 15"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "CC2 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "CC4 Beetle",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "23",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 23"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "24",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 24"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "25",
+    "Reward Type": "Card",
+    "Reward": "Gila Beast",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 25"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Gila Beast",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "33",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 33"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "34",
+    "Reward Type": "Card",
+    "Reward": "Gila Crawler",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 34"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Gila Beast",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 35"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Concept",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "43",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 43"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "44",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 44"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "45",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Concept",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 45"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Plan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Doomsday Concept",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "53",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 53"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "54",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 54"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Primus Vectra",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 55"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "58",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 58"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "59",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 59"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Primus Vectra",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "63",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 63"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "64",
+    "Reward Type": "Card",
+    "Reward": "Primus Alpha",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 64"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Primus Vectra",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Vulcan",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "95",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 95"
+  },
+  {
+    "Mission ID": 1518,
+    "Mission Name": "Vulcan Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Vulcan Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse Whispered",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse Whispered",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Draxacurse Whispered",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Tunneling Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "58",
+    "Reward Type": "Card",
+    "Reward": "Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 58"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "59",
+    "Reward Type": "Card",
+    "Reward": "Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 59"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Tunneling Cavewurm",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Oluth",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "95",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 95"
+  },
+  {
+    "Mission ID": 1519,
+    "Mission Name": "Blightbringer Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Blightbringer Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "Gravity Controller",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "Gravity Controller",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Gravity Synthesizer",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Gravity Controller",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Gravity Controller",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Gravity Synthesizer",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Fleet Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Fleet Xonar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "58",
+    "Reward Type": "Card",
+    "Reward": "Hidden Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 58"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "59",
+    "Reward Type": "Card",
+    "Reward": "Hidden Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 59"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Devious Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "63",
+    "Reward Type": "Card",
+    "Reward": "Hidden Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 63"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "64",
+    "Reward Type": "Card",
+    "Reward": "Hidden Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 64"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Devious Niaq",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "68",
+    "Reward Type": "Card",
+    "Reward": "Bardiche Slasher",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 68"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "69",
+    "Reward Type": "Card",
+    "Reward": "Bardiche Slasher",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 69"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Bardiche Cleaver",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Excelsitus",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "95",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 95"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "98",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 98"
+  },
+  {
+    "Mission ID": 1520,
+    "Mission Name": "Armada Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Armada Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Hand",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Hand",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Grip",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Hand",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Hand",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Jotun's Grip",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Habrok",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Habrok",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Habrok Swiftwing",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "Habrok",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Habrok",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Habrok Swiftwing",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "58",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 58"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "59",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 59"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim Stronghold",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "63",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 63"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "64",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 64"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Thrymheim Stronghold",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "68",
+    "Reward Type": "Card",
+    "Reward": "Baldur",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 68"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "69",
+    "Reward Type": "Card",
+    "Reward": "Baldur",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 69"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Baldur the Beautiful",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Jotun",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "95",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 95"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "98",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 98"
+  },
+  {
+    "Mission ID": 1521,
+    "Mission Name": "Avalanche Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Avalanche Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Dominion Shard-2 x1000",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "18",
+    "Reward Type": "Card",
+    "Reward": "Ultimata",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 18"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "19",
+    "Reward Type": "Card",
+    "Reward": "Ultimata",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 19"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Ultimata Scorned",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "28",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 28"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "29",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 29"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Fury",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "38",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 38"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "39",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 39"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Fury",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "48",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 48"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "49",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Ire",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 49"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Seraph's Fury",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Tetrapede",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Tetrapede",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Tetrapede",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "75",
+    "Reward Type": "Card",
+    "Reward": "Tetrapede",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 75"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Serapherus",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "85",
+    "Reward Type": "Card",
+    "Reward": "Ascension Altar",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 85"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "92",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 92"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "94",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 94"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "96",
+    "Reward Type": "Card",
+    "Reward": "Neocyte Core-2",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 96"
+  },
+  {
+    "Mission ID": 1522,
+    "Mission Name": "Seraph Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Seraph Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Iktomi",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Iktomi",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Iktomi the Schemer",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Total Control",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Total Control",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 55"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Total Assimilate",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Inverted Mountain",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Inverted Mountain",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Paradox Mountain",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1523,
+    "Mission Name": "Phoenix Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Phoenix Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "",
+    "Achievement Name (may not match mission)": "Gold:500"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Apex",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 10"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "20",
+    "Reward Type": "Card",
+    "Reward": "Vindicator Reactor",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 20"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "30",
+    "Reward Type": "Card",
+    "Reward": "Keminok",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 30"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "35",
+    "Reward Type": "Card",
+    "Reward": "Keminok",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 35"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "40",
+    "Reward Type": "Card",
+    "Reward": "Keminok Beast",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 40"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "50",
+    "Reward Type": "Card",
+    "Reward": "Salvage Repository x5",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 50"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "55",
+    "Reward Type": "Card",
+    "Reward": "Abandoned Mines",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 55"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "60",
+    "Reward Type": "Card",
+    "Reward": "Abandoned Mines",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 60"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "65",
+    "Reward Type": "Card",
+    "Reward": "Rebuilt Mines",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 65"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "70",
+    "Reward Type": "Card",
+    "Reward": "Symbion Serpent",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 70"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "80",
+    "Reward Type": "Card",
+    "Reward": "Symbion Serpent",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 80"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "90",
+    "Reward Type": "Card",
+    "Reward": "Symbion Hydral",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 90"
+  },
+  {
+    "Mission ID": 1524,
+    "Mission Name": "Hydraxus Mutant",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "100",
+    "Reward Type": "War Bonds",
+    "Reward": "1000",
+    "Achievement Name (may not match mission)": "Hydraxus Mutant Lv. 100"
+  },
+  {
+    "Mission ID": 2001,
+    "Mission Name": "Gore Uprising 1",
+    "Energy": 20,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Annelid Mass",
+    "Achievement Name (may not match mission)": "Gold:22  Item:Black Blight Stone"
+  },
+  {
+    "Mission ID": 2001,
+    "Mission Name": "Gore Uprising 1",
+    "Energy": 20,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Into the Blight"
+  },
+  {
+    "Mission ID": 2001,
+    "Mission Name": "Gore Uprising 1",
+    "Energy": 20,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Into the Blight IV"
+  },
+  {
+    "Mission ID": 2001,
+    "Mission Name": "Gore Uprising 1",
+    "Energy": 20,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Into the Blight VII"
+  },
+  {
+    "Mission ID": 2002,
+    "Mission Name": "Gore Uprising 2",
+    "Energy": 30,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Scavenger",
+    "Achievement Name (may not match mission)": "Gold:33  Item:Crimson Blight Stone"
+  },
+  {
+    "Mission ID": 2002,
+    "Mission Name": "Gore Uprising 2",
+    "Energy": 30,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Into the Blight II"
+  },
+  {
+    "Mission ID": 2002,
+    "Mission Name": "Gore Uprising 2",
+    "Energy": 30,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Into the Blight V"
+  },
+  {
+    "Mission ID": 2002,
+    "Mission Name": "Gore Uprising 2",
+    "Energy": 30,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Into the Blight VIII"
+  },
+  {
+    "Mission ID": 2003,
+    "Mission Name": "Gore Uprising 3",
+    "Energy": 40,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Banshee",
+    "Achievement Name (may not match mission)": "Gold:44  Item:Crimson Blight Stone"
+  },
+  {
+    "Mission ID": 2003,
+    "Mission Name": "Gore Uprising 3",
+    "Energy": 40,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Into the Blight III"
+  },
+  {
+    "Mission ID": 2003,
+    "Mission Name": "Gore Uprising 3",
+    "Energy": 40,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Into the Blight VI"
+  },
+  {
+    "Mission ID": 2003,
+    "Mission Name": "Gore Uprising 3",
+    "Energy": 40,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Into the Blight IX"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Corpulent Barrier",
+    "Achievement Name (may not match mission)": "Gold:60  Item:Crimson Blight Stone"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Miasma Destroyer"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "2",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Miasma Destroyer II"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "3",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Miasma Destroyer III"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "4",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Miasma Destroyer IV"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Miasma Destroyer V"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "6",
+    "Reward Type": "Gold",
+    "Reward": "500",
+    "Achievement Name (may not match mission)": "Miasma Destroyer VI"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "7",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Miasma Destroyer VII"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "8",
+    "Reward Type": "Gold",
+    "Reward": "500",
+    "Achievement Name (may not match mission)": "Miasma Destroyer VIII"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "9",
+    "Reward Type": "War Bonds",
+    "Reward": "15",
+    "Achievement Name (may not match mission)": "Miasma Destroyer IX"
+  },
+  {
+    "Mission ID": 2004,
+    "Mission Name": "Miasma",
+    "Energy": 50,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Anvil",
+    "Achievement Name (may not match mission)": "Miasma Destroyer X"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Stealthy Niaq",
+    "Achievement Name (may not match mission)": "Gold:115  Item:Blue Cypher Scope"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "2",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer II"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "3",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer III"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "4",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer IV"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer V"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "6",
+    "Reward Type": "Gold",
+    "Reward": "500",
+    "Achievement Name (may not match mission)": "Typhon Destroyer VI"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "7",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer VII"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "8",
+    "Reward Type": "Gold",
+    "Reward": "500",
+    "Achievement Name (may not match mission)": "Typhon Destroyer VIII"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "9",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon Destroyer IX"
+  },
+  {
+    "Mission ID": 2005,
+    "Mission Name": "Gore Typhon",
+    "Energy": 100,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Card",
+    "Reward": "Tartarus Scion",
+    "Achievement Name (may not match mission)": "Typhon Destroyer X"
+  },
+  {
+    "Mission ID": 2006,
+    "Mission Name": "Gore Uprising 4",
+    "Energy": 60,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Acid Spewer",
+    "Achievement Name (may not match mission)": "Gold:72  Item:Red Blight Stone"
+  },
+  {
+    "Mission ID": 2006,
+    "Mission Name": "Gore Uprising 4",
+    "Energy": 60,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist"
+  },
+  {
+    "Mission ID": 2006,
+    "Mission Name": "Gore Uprising 4",
+    "Energy": 60,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist IV"
+  },
+  {
+    "Mission ID": 2006,
+    "Mission Name": "Gore Uprising 4",
+    "Energy": 60,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist VII"
+  },
+  {
+    "Mission ID": 2007,
+    "Mission Name": "Gore Uprising 5",
+    "Energy": 75,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Sulfuris Sentry",
+    "Achievement Name (may not match mission)": "Gold:90  Item:Yellow Blight Stone"
+  },
+  {
+    "Mission ID": 2007,
+    "Mission Name": "Gore Uprising 5",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist II"
+  },
+  {
+    "Mission ID": 2007,
+    "Mission Name": "Gore Uprising 5",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist V"
+  },
+  {
+    "Mission ID": 2007,
+    "Mission Name": "Gore Uprising 5",
+    "Energy": 75,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist VIII"
+  },
+  {
+    "Mission ID": 2008,
+    "Mission Name": "Gore Uprising 6",
+    "Energy": 90,
+    "Row Type": "Base (1st Clear)",
+    "Level": "—",
+    "Reward Type": "Card",
+    "Reward": "Blight Bulwark",
+    "Achievement Name (may not match mission)": "Gold:108  Item:Blue Blight Stone"
+  },
+  {
+    "Mission ID": 2008,
+    "Mission Name": "Gore Uprising 6",
+    "Energy": 90,
+    "Row Type": "Level Reward",
+    "Level": "1",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist III"
+  },
+  {
+    "Mission ID": 2008,
+    "Mission Name": "Gore Uprising 6",
+    "Energy": 90,
+    "Row Type": "Level Reward",
+    "Level": "5",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist VI"
+  },
+  {
+    "Mission ID": 2008,
+    "Mission Name": "Gore Uprising 6",
+    "Energy": 90,
+    "Row Type": "Level Reward",
+    "Level": "10",
+    "Reward Type": "Gold",
+    "Reward": "250",
+    "Achievement Name (may not match mission)": "Typhon's Fist IX"
+  }
+];
+
+    const searchInput = document.getElementById('searchInput');
+    const typeFilter = document.getElementById('typeFilter');
+    const tableBody = document.getElementById('tableBody');
+    const statsDisplay = document.getElementById('statsDisplay');
+
+    let currentSortCol = -1;
+    let sortAsc = true;
+
+    function renderTable(filteredData) {
+        tableBody.innerHTML = '';
+        
+        filteredData.forEach(row => {
+            const tr = document.createElement('tr');
+            
+            const badgeClass = row['Row Type'] === 'Base (1st Clear)' ? 'badge-base' : 'badge-reward';
+            
+            tr.innerHTML = `
+                <td style="color: var(--text-muted); font-weight: bold;">${row['Mission ID']}</td>
+                <td style="font-weight: 500;">${row['Mission Name']}</td>
+                <td><span class="energy-tag">${row['Energy']}</span></td>
+                <td><span class="badge ${badgeClass}">${row['Row Type']}</span></td>
+                <td>${row['Level']}</td>
+                <td>${row['Reward Type']}</td>
+                <td style="color: #f1c40f; font-weight: 500;">${row['Reward']}</td>
+                <td style="font-size: 0.9rem; color: var(--text-muted);">${row['Achievement Name (may not match mission)']}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+        
+        statsDisplay.textContent = `Einträge gefunden: ${filteredData.length} von ${data.length}`;
+    }
+
+    function filterData() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeFilter.value;
+
+        const filtered = data.filter(row => {
+            const matchesSearch = 
+                row['Mission Name'].toLowerCase().includes(searchTerm) ||
+                row['Reward'].toLowerCase().includes(searchTerm) ||
+                row['Achievement Name (may not match mission)'].toLowerCase().includes(searchTerm) ||
+                row['Reward Type'].toLowerCase().includes(searchTerm);
+                
+            const matchesType = !selectedType || row['Row Type'] === selectedType;
+            
+            return matchesSearch && matchesType;
+        });
+
+        renderTable(filtered);
+    }
+
+    function sortTable(colIndex) {
+        if (currentSortCol === colIndex) {
+            sortAsc = !sortAsc;
+        } else {
+            currentSortCol = colIndex;
+            sortAsc = true;
+        }
+
+        const keys = [
+            'Mission ID', 
+            'Mission Name', 
+            'Energy', 
+            'Row Type', 
+            'Level', 
+            'Reward Type', 
+            'Reward', 
+            'Achievement Name (may not match mission)'
+        ];
+        const key = keys[colIndex];
+
+        data.sort((a, b) => {
+            let valA = a[key];
+            let valB = b[key];
+
+            if (typeof valA === 'number' && typeof valB === 'number') {
+                return sortAsc ? valA - valB : valB - valA;
+            }
+            
+            valA = String(valA).toLowerCase();
+            valB = String(valB).toLowerCase();
+            
+            if (valA < valB) return sortAsc ? -1 : 1;
+            if (valA > valB) return sortAsc ? 1 : -1;
+            return 0;
+        });
+
+        filterData();
+    }
+
+    searchInput.addEventListener('input', filterData);
+    typeFilter.addEventListener('change', filterData);
+
+    // Initial Render
+    renderTable(data);
+</script>
+
+</body>
+</html>
