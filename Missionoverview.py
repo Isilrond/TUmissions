@@ -8,6 +8,9 @@ def extract_game_data():
     missions = {}
     result_data = []
 
+    # Global progression multiplier for gold rewards
+    GOLD_MULTIPLIER = 7
+
     print("Starting extraction of XML structures...")
 
     # 1. Map card nomenclature (sections 1 to 21)
@@ -64,9 +67,11 @@ def extract_game_data():
                 # Extract direct mission rewards
                 rewards_node = mission.find('rewards')
                 if rewards_node is not None:
-                    # Gold
+                    # Gold (with active global multiplier applied)
                     gold = rewards_node.find('gold')
                     if gold is not None and gold.text:
+                        base_gold = int(gold.text) if gold.text.isdigit() else 0
+                        multiplied_gold = base_gold * GOLD_MULTIPLIER
                         result_data.append({
                             "Mission ID": int(m_id) if m_id.isdigit() else m_id,
                             "Mission Name": m_name,
@@ -74,7 +79,7 @@ def extract_game_data():
                             "Row Type": "Mission Reward",
                             "Level": 1,
                             "Reward Type": "Gold",
-                            "Reward": f"{gold.text} Gold",
+                            "Reward": f"{multiplied_gold} Gold",
                             "Achievement Name (may not match mission)": ""
                         })
                     # Card
@@ -163,9 +168,11 @@ def extract_game_data():
                                     "Achievement Name (may not match mission)": ach_name
                                 })
                                 
-                            # Gold rewards inside achievements
+                            # Gold rewards inside achievements (with active global multiplier applied)
                             gold = reward_node.find('gold')
                             if gold is not None and gold.text:
+                                base_gold = int(gold.text) if gold.text.isdigit() else 0
+                                multiplied_gold = base_gold * GOLD_MULTIPLIER
                                 result_data.append({
                                     "Mission ID": int(m_id) if m_id.isdigit() else m_id,
                                     "Mission Name": m_info["name"],
@@ -173,7 +180,7 @@ def extract_game_data():
                                     "Row Type": "Achievement Reward",
                                     "Level": lvl,
                                     "Reward Type": "Gold",
-                                    "Reward": f"{gold.text} Gold",
+                                    "Reward": f"{multiplied_gold} Gold",
                                     "Achievement Name (may not match mission)": ach_name
                                 })
         except Exception as e:
